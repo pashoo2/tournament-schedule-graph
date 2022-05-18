@@ -1,4 +1,4 @@
-import {AttributeName, EdgeType, NodeType, TournamentType} from '@root/enum';
+import {AttributeName, EdgeType, NodeType} from '@root/enum';
 import {INode} from './nodes';
 import {IEdge} from './edges';
 
@@ -12,4 +12,4 @@ export interface IAttributeNodeWithMethods<N extends AttributeName, V>
   setValue(value: V): void;
 }
 
-export type IAttributeEdge = IEdge<EdgeType.Attribute, false, null>;
+export type TAttributeEdge = IEdge<EdgeType.Attribute, false, AttributeName>;

@@ -1,5 +1,5 @@
 import {AttributeName, TournamentType} from '@root/enum';
-import {AttributeNode} from '@root/implementations/nodes/attribute';
+import {AttributeNode} from '@root/implementations';
 
 export class TournamentTypeAttributeNode extends AttributeNode<
   AttributeName.TournamentType,

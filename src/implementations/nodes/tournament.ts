@@ -4,4 +4,9 @@ import {ITournamentNode} from '@root/types';
 
 export class TournamentNode
   extends NodeWithMethods<NodeType.Tournament>
-  implements ITournamentNode {}
+  implements ITournamentNode
+{
+  constructor(id: string) {
+    super(id, NodeType.Tournament, null);
+  }
+}

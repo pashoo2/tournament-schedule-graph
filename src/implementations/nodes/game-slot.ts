@@ -4,4 +4,9 @@ import {IGameSlotNode} from '@root/types';
 
 export class GameSlotNode
   extends NodeWithMethods<NodeType.GameSlot>
-  implements IGameSlotNode {}
+  implements IGameSlotNode
+{
+  constructor(id: string) {
+    super(id, NodeType.GameSlot, null);
+  }
+}

@@ -1,4 +1,4 @@
-export * from './attribute';
+export * from './attributes';
 
 export * from './node';
 

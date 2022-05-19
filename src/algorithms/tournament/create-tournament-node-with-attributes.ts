@@ -10,21 +10,25 @@ import {
 } from '@root/implementations';
 import {getEdgeId, getNodeId} from '@root/algorithms';
 
-export type NodeTypesRequired =
+export type CreateTournamentNodeWithAttributeGraphNodeTypesRequired =
   | TournamentNameAttributeNode
   | TournamentTypeAttributeNode
   | TournamentMaxPlayersAttributeNode
   | TournamentMinPlayersAttributeNode
   | TournamentNode;
 
-export type EdgeTypeRequired = AttributeEdge<AttributeName>;
+export type CreateTournamentNodeWithAttributeGraphEdgeTypeRequired =
+  AttributeEdge<AttributeName>;
 
 export interface ICreateTournamentNodeWithAttributeParameters {
   type: TournamentType;
   name: string;
   maxPlayers: number;
   minPlayers: number;
-  graph: IGraph<NodeTypesRequired, EdgeTypeRequired>;
+  graph: IGraph<
+    CreateTournamentNodeWithAttributeGraphNodeTypesRequired,
+    CreateTournamentNodeWithAttributeGraphEdgeTypeRequired
+  >;
 }
 
 export function createTournamentNodeWithAttributeParameters(

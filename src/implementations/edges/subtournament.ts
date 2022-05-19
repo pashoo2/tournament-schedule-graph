@@ -1,4 +1,4 @@
-import {EdgeType, GameType} from '@root/enum';
+import {EdgeType} from '@root/enum';
 import {EdgeWithMethods} from '@root/implementations';
 import {ISubTournamentEdge} from '@root/types';
 

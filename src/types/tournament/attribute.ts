@@ -1,5 +1,5 @@
 import {AttributeName, TournamentType} from '@root/enum';
-import {IAttributeNode, IAttributeNodeWithMethods} from '../attribute';
+import {IAttributeNodeWithMethods} from '../attribute';
 
 export type IAttributeTournamentTypeNode = IAttributeNodeWithMethods<
   AttributeName.TournamentType,

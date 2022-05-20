@@ -1,12 +1,12 @@
 import {
   validateSingleTournamentParameters,
-  generateSingleEliminationTours,
-  IGenerateSingleEliminationTour,
+  generateSingleEliminationSchedule,
+  IGenerateSingleEliminationSchedule,
   createTournamentNodeWithAttributeParameters,
   CreateTournamentNodeWithAttributeGraphNodeTypesRequired,
   CreateTournamentNodeWithAttributeGraphEdgeTypeRequired,
-  GenerateSingleEliminationToursGraphEdgeTypeRequired,
-  GenerateSingleEliminationToursGraphNodeTypesRequired,
+  TGenerateSingleEliminationScheduleGraphEdgeTypeRequired,
+  TGenerateSingleEliminationScheduleGraphNodeTypesRequired,
 } from '@root/algorithms';
 import {GameType, TournamentType} from '@root/enum';
 import {TournamentNode} from '@root/implementations';
@@ -14,11 +14,11 @@ import {IGraph} from '@root/types';
 
 export type NodeTypesRequired =
   | CreateTournamentNodeWithAttributeGraphNodeTypesRequired
-  | GenerateSingleEliminationToursGraphNodeTypesRequired;
+  | TGenerateSingleEliminationScheduleGraphNodeTypesRequired;
 
 export type EdgeTypeRequired =
   | CreateTournamentNodeWithAttributeGraphEdgeTypeRequired
-  | GenerateSingleEliminationToursGraphEdgeTypeRequired;
+  | TGenerateSingleEliminationScheduleGraphEdgeTypeRequired;
 
 export interface ISingleRoundTournamentCreateScheduleParameters {
   maxPlayers: number;
@@ -47,16 +47,16 @@ export function singleRoundTournamentCreateSchedule(
 
   const numberOfTours = Math.log2(maxPlayers);
   const numberOfGroupTours = numberOfTours - FINAL_TOURS.length;
-  const scheduleParams: IGenerateSingleEliminationTour = {
+  const scheduleParams: IGenerateSingleEliminationSchedule = {
     graph,
     numberOfPlayers: maxPlayers,
     tournamentNode,
-    toursGameTypes: [
+    roundGameTypes: [
       ...new Array(numberOfGroupTours).fill(GameType.Group),
       ...FINAL_TOURS,
     ],
   };
-  const finalGameSlots = generateSingleEliminationTours(scheduleParams);
+  const finalGameSlots = generateSingleEliminationSchedule(scheduleParams);
 
   console.log(finalGameSlots);
   // TODO

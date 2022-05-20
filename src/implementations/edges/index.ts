@@ -13,3 +13,5 @@ export * from './game-slot-rival';
 export * from './looser';
 
 export * from './winner';
+
+export * from './game-mode';

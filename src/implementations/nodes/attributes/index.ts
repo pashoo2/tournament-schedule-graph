@@ -7,3 +7,5 @@ export * from './tournament-name';
 export * from './tournament-type';
 
 export * from './attribute';
+
+export * from './game-mode';

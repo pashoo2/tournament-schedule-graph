@@ -1,12 +1,12 @@
 import {NodeType} from '@root/enum';
 import {NodeWithMethods} from './node';
-import {IGameSlotNode} from '@root/types';
+import {TGameSlotNode, TGameSlotIndex} from '@root/types';
 
 export class GameSlotNode
-  extends NodeWithMethods<NodeType.GameSlot>
-  implements IGameSlotNode
+  extends NodeWithMethods<NodeType.GameSlot, TGameSlotIndex>
+  implements TGameSlotNode
 {
-  constructor(id: string) {
-    super(id, NodeType.GameSlot, null);
+  constructor(id: string, index: TGameSlotIndex) {
+    super(id, NodeType.GameSlot, index);
   }
 }

@@ -3,4 +3,5 @@ export enum AttributeName {
   TournamentName,
   TournamentMaxPlayers,
   TournamentMinPlayers,
+  GameMode,
 }

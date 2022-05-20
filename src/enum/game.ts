@@ -5,3 +5,8 @@ export enum GameType {
   Final,
   GrandFinal,
 }
+
+export enum GameMode {
+  Winner,
+  Looser,
+}

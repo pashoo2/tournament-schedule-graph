@@ -1,4 +1,4 @@
-import {IGraph} from '@root/types';
+import {IGraph, TGameSlotIndex} from '@root/types';
 import {GameType} from '@root/enum';
 import {getNodeId, getEdgeId} from '@root/algorithms';
 import {
@@ -8,23 +8,31 @@ import {
   TournamentNode,
 } from '@root/implementations';
 
-export type GenerateSingleEliminationToursGraphNodeTypesRequired =
+export type TGenerateSingleEliminationScheduleGraphNodeTypesRequired =
   | TournamentNode
   | GameSlotNode;
 
-export type GenerateSingleEliminationToursGraphEdgeTypeRequired =
+export type TGenerateSingleEliminationScheduleGraphEdgeTypeRequired =
   | GameSlotRivalEdge
   | GameTypeEdge;
 
-export interface IGenerateSingleEliminationTour {
+export interface IGenerateSingleEliminationSchedule {
+  /**
+   * The very first game slots will have this index.
+   * Next games will have this increased each time by 1.
+   *
+   * @type {TGameSlotIndex}
+   * @memberof IGenerateSingleEliminationTour
+   */
+  indexOfFirstGame: TGameSlotIndex;
   numberOfPlayers: number;
   /**
-   * Should contain as much elements as tours going to be
+   * Should contain as much elements as it rounds going to be
    *
    * @type {GameType[]}
    * @memberof IGenerateSingleEliminationTour
    */
-  toursGameTypes: GameType[];
+  roundGameTypes: GameType[];
   /**
    * Tournament
    *
@@ -33,8 +41,8 @@ export interface IGenerateSingleEliminationTour {
    */
   tournamentNode: TournamentNode;
   graph: IGraph<
-    GenerateSingleEliminationToursGraphNodeTypesRequired,
-    GenerateSingleEliminationToursGraphEdgeTypeRequired
+    TGenerateSingleEliminationScheduleGraphNodeTypesRequired,
+    TGenerateSingleEliminationScheduleGraphEdgeTypeRequired
   >;
 }
 
@@ -42,20 +50,22 @@ export interface IGenerateSingleEliminationTour {
  * Generates schedule of Single Elimination tournament.
  *
  * @export
- * @param {IGenerateSingleEliminationTour} parameters
- * @return {*}  {GameSlotNode[]} - it will be the final left side game slots, e.g. the winners of the tournament
+ * @param {IGenerateSingleEliminationSchedule} parameters
+ * @return {GameSlotNode[]} - it will be the final left side game slots, e.g. the winners of the tournament
  */
-export function generateSingleEliminationTours(
-  parameters: IGenerateSingleEliminationTour
+export function generateSingleEliminationSchedule(
+  parameters: IGenerateSingleEliminationSchedule
 ): GameSlotNode[] {
   const {
     tournamentNode,
     graph,
     numberOfPlayers: numberOfMatches,
-    toursGameTypes,
+    roundGameTypes: toursGameTypes,
+    indexOfFirstGame,
   } = parameters;
   const numberOfTours = toursGameTypes.length;
-  const prevTourNodes: GameSlotNode[] = [];
+  const prevRoundNodes: GameSlotNode[] = [];
+  let currentGameIndex: TGameSlotIndex = indexOfFirstGame;
 
   for (
     let currentTourIdx = 0;
@@ -66,7 +76,7 @@ export function generateSingleEliminationTours(
       numberOfMatches / (currentTourIdx ? currentTourIdx * 2 : 1);
     const isFinalGame = currentTourNumberOfMatches === 1;
     const currentTourGameType: GameType = toursGameTypes[currentTourIdx];
-    const getCurrentTourGameTypeEdge = () =>
+    const getCurrentRoundGameTypeEdge = () =>
       new GameTypeEdge(getEdgeId(), currentTourGameType);
 
     if (!isFinalGame && currentTourNumberOfMatches % 2) {
@@ -81,12 +91,12 @@ export function generateSingleEliminationTours(
       gameIndex += 1
     ) {
       const currentGameSlots: GameSlotNode[] = [];
-      const gameFirstSlot = new GameSlotNode(getNodeId());
+      const gameFirstSlot = new GameSlotNode(getNodeId(), currentGameIndex);
       graph.addNode(gameFirstSlot);
       currentGameSlots.push(gameFirstSlot);
 
       if (!isFinalGame) {
-        const gameSecondSlot = new GameSlotNode(getNodeId());
+        const gameSecondSlot = new GameSlotNode(getNodeId(), currentGameIndex);
         graph.addNode(gameSecondSlot);
         currentGameSlots.push(gameSecondSlot);
 
@@ -94,38 +104,48 @@ export function generateSingleEliminationTours(
         graph.addEdge(gameFirstSlot, gameSecondSlot, gameSlotRivalEdge);
       }
 
+      currentGameIndex += 1;
+
       for (const slot of currentGameSlots) {
         if (currentTourIdx === 0) {
           // first tour slots should be connected with the tournament node
-          graph.addEdge(tournamentNode, slot, getCurrentTourGameTypeEdge());
+          graph.addEdge(tournamentNode, slot, getCurrentRoundGameTypeEdge());
         } else {
           // two slots of the previous round should lead to 1 node in the next round
           // since there will be only the one winner
-          const prevTourFirstSlot = prevTourNodes.shift();
-          const prevTourSecondSlot = prevTourNodes.shift();
+          const prevRoundFirstSlot = prevRoundNodes.shift();
+          const prevRoundSecondSlot = prevRoundNodes.shift();
 
-          if (!prevTourFirstSlot) {
+          if (!prevRoundFirstSlot) {
             throw new Error(
-              `There is no "prevTourFirstSlot" for the round "${
+              `There is no "prevRoundFirstSlot" for the round "${
                 currentTourIdx + 1
               }" game "${gameIndex}"`
             );
           }
-          if (!prevTourSecondSlot) {
+          if (!prevRoundSecondSlot) {
             throw new Error(
-              `There is no "prevTourSecondSlot" for the round "${
+              `There is no "prevRoundSecondSlot" for the round "${
                 currentTourIdx + 1
               }" game "${gameIndex}"`
             );
           }
 
-          graph.addEdge(prevTourFirstSlot, slot, getCurrentTourGameTypeEdge());
-          graph.addEdge(prevTourSecondSlot, slot, getCurrentTourGameTypeEdge());
+          graph.addEdge(
+            prevRoundFirstSlot,
+            slot,
+            getCurrentRoundGameTypeEdge()
+          );
+          graph.addEdge(
+            prevRoundSecondSlot,
+            slot,
+            getCurrentRoundGameTypeEdge()
+          );
         }
       }
 
-      prevTourNodes.push(...currentGameSlots);
+      prevRoundNodes.push(...currentGameSlots);
     }
   }
-  return prevTourNodes;
+  return prevRoundNodes;
 }

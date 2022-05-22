@@ -1,5 +1,5 @@
 import {NodeType} from '@root/enum';
-import {INodeWithMethods} from '../../types/nodes';
+import {INodeWithMethods} from '@root/types';
 
 export class NodeWithMethods<T extends NodeType, V = null>
   implements INodeWithMethods<T, V>

@@ -4,7 +4,7 @@ import {getNodeId, getEdgeId} from '@root/algorithms';
 import {
   GameSlotNode,
   GameSlotRivalEdge,
-  GameTypeEdge,
+  GameTypeEdgeImpl,
   TournamentNode,
 } from '@root/implementations';
 
@@ -14,7 +14,7 @@ export type TGenerateSingleEliminationScheduleGraphNodeTypesRequired =
 
 export type TGenerateSingleEliminationScheduleGraphEdgeTypeRequired =
   | GameSlotRivalEdge
-  | GameTypeEdge;
+  | GameTypeEdgeImpl;
 
 export interface IGenerateSingleEliminationSchedule {
   /**
@@ -77,7 +77,7 @@ export function generateSingleEliminationSchedule(
     const isFinalGame = currentTourNumberOfMatches === 1;
     const currentTourGameType: GameType = toursGameTypes[currentTourIdx];
     const getCurrentRoundGameTypeEdge = () =>
-      new GameTypeEdge(getEdgeId(), currentTourGameType);
+      new GameTypeEdgeImpl(getEdgeId(), currentTourGameType);
 
     if (!isFinalGame && currentTourNumberOfMatches % 2) {
       throw new Error(

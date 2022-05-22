@@ -1,6 +1,6 @@
 import {AttributeName, EdgeType} from '@root/enum';
-import {EdgeWithMethods} from '@root/implementations';
 import {TAttributeEdge} from '@root/types';
+import {EdgeWithMethods} from './edge';
 
 export class AttributeEdge<N extends AttributeName>
   extends EdgeWithMethods<EdgeType.Attribute, false, N>

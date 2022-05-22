@@ -1,6 +1,6 @@
 import {AttributeName, NodeType} from '@root/enum';
+import {IAttributeNode} from '@root/types';
 import {NodeWithMethods} from '../node';
-import {IAttributeNode} from '../../../types/attribute';
 
 export interface IAttributeNodeConstructorParameters<
   N extends AttributeName,
@@ -20,8 +20,7 @@ export class AttributeNode<N extends AttributeName, V>
   }
   readonly #name: N;
   constructor(parameters: IAttributeNodeConstructorParameters<N, V>) {
-    const {id, name, value} = parameters;
-    super(id, NodeType.Attribute, value);
-    this.#name = name;
+    super(parameters.id, NodeType.Attribute, parameters.value);
+    this.#name = parameters.name;
   }
 }

@@ -1,7 +1,7 @@
 import {AttributeName} from '@root/enum';
-import {AttributeNode} from '@root/implementations';
 import {TGameModeAttributeNode} from '@root/types';
 import {GameMode} from '@root/enum';
+import {AttributeNode} from './attribute';
 
 export class GameModeAttributeNode
   extends AttributeNode<AttributeName.GameMode, GameMode>

@@ -3,7 +3,7 @@ import {
   GameModeEdge,
   GameSlotNode,
   GameSlotRivalEdge,
-  GameTypeEdge,
+  GameTypeEdgeImpl,
 } from '@root/implementations';
 import {IGraph, TGameSlotIndex} from '@root/types';
 import {getEdgeId} from '@root/algorithms';
@@ -20,7 +20,7 @@ export type TCreateDoubleEliminationBracketGraphNodeTypesRequired =
 
 export type TCreateDoubleEliminationBracketEdgeTypesRequired =
   | TCreateOneRoundGameSlotsGraphEdgeTypesRequired
-  | GameTypeEdge
+  | GameTypeEdgeImpl
   | GameModeEdge;
 
 export interface ICreateDoubleEliminationBracketOfGamesParameters {
@@ -131,8 +131,8 @@ export function createDoubleEliminationBracket(
     }
     return GameType.Group;
   }
-  function createGameTypeEdge(gameType: GameType): GameTypeEdge {
-    return new GameTypeEdge(getEdgeId(), gameType);
+  function createGameTypeEdge(gameType: GameType): GameTypeEdgeImpl {
+    return new GameTypeEdgeImpl(getEdgeId(), gameType);
   }
 
   let currentRoundIndex = 0;
@@ -179,7 +179,7 @@ export function createDoubleEliminationBracket(
 
       if (currentGameSlotForPlayerOrUndefined) {
         // connect the previous game slot with this one
-        const gameTypeEdge: GameTypeEdge = createGameTypeEdge(
+        const gameTypeEdge: GameTypeEdgeImpl = createGameTypeEdge(
           getGameTypeForRestPlayers(fakePlayers.length)
         );
         // link the previous game with the current one

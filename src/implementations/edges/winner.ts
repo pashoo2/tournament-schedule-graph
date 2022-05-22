@@ -1,6 +1,6 @@
 import {EdgeType} from '@root/enum';
-import {EdgeWithMethods} from '@root/implementations';
 import {IWinnerEdge, TGameResultPoint} from '@root/types';
+import {EdgeWithMethods} from './edge';
 
 export class WinnerEdge
   extends EdgeWithMethods<EdgeType.Winner, false, TGameResultPoint>

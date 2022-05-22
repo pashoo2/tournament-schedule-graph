@@ -1,6 +1,6 @@
 import {NodeType} from '@root/enum';
-import {NodeWithMethods} from './node';
 import {TGameSlotNode, TGameSlotIndex} from '@root/types';
+import {NodeWithMethods} from './node';
 
 export class GameSlotNode
   extends NodeWithMethods<NodeType.GameSlot, TGameSlotIndex>

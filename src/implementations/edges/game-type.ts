@@ -1,8 +1,8 @@
 import {EdgeType, GameType} from '@root/enum';
-import {EdgeWithMethods} from '@root/implementations';
 import {TGameTypeEdge} from '@root/types';
+import {EdgeWithMethods} from './edge';
 
-export class GameTypeEdge
+export class GameTypeEdgeImpl
   extends EdgeWithMethods<EdgeType.GameType, true, GameType>
   implements TGameTypeEdge
 {

@@ -4,7 +4,12 @@ import {getEdgeId, getNodeId} from '@root/algorithms';
 import {IEdge} from '@root/types';
 
 describe('GraphImpl', () => {
-  const graph = new GraphImpl();
+  let graph: GraphImpl<any, any>;
+
+  beforeEach(() => {
+    graph = new GraphImpl();
+  });
+
   it('Should add a node', () => {
     const node = {
       id: getNodeId(),

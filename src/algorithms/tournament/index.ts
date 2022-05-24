@@ -1,7 +1,7 @@
 export * from './create-tournament-node-with-attributes';
 
-export * from './create-double-elimination-bracket';
+export * from './generate-single-elimination-schedule';
 
 export * from './create-one-round-game-slots';
 
-export * from './generate-single-elimination-schedule';
+export * from './create-double-elimination-bracket';

@@ -60,13 +60,13 @@ export class GraphImpl<
     }
   }
   protected throwIfNodeExistsInList(soughNode: NT): void {
-    if (!this.isNodeExistsInList(soughNode)) {
+    if (this.isNodeExistsInList(soughNode)) {
       throw new Error('The node is already presented in graph');
     }
   }
   protected throwIfNodeIdExistsInList(soughNode: NT): void {
     const nodeId = soughNode.id;
-    if (!this.isNodeIdExistsInList(nodeId)) {
+    if (this.isNodeIdExistsInList(nodeId)) {
       throw new Error(
         `A node with the id "${nodeId}" is already presented in the graph`
       );
@@ -79,13 +79,13 @@ export class GraphImpl<
     return this.edgesIds.has(edgeId);
   }
   protected throwIfEdgeExistsInList(soughEdge: ET): void {
-    if (!this.isEdgeExistsInList(soughEdge)) {
+    if (this.isEdgeExistsInList(soughEdge)) {
       throw new Error('The edge is already exists in the list');
     }
   }
   protected throwIfEdgeIdExistsInList(soughEdge: ET): void {
     const edgeId = soughEdge.id;
-    if (!this.isEdgeIdExistsInList(edgeId)) {
+    if (this.isEdgeIdExistsInList(edgeId)) {
       throw new Error(
         `The edge with the same id "${edgeId}" is already exist in the list`
       );

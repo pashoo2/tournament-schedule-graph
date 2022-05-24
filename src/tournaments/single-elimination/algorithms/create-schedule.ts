@@ -2,29 +2,33 @@ import {
   validateSingleTournamentParameters,
   generateSingleEliminationSchedule,
   IGenerateSingleEliminationSchedule,
-  createTournamentNodeWithAttributeParameters,
-  CreateTournamentNodeWithAttributeGraphNodeTypesRequired,
-  CreateTournamentNodeWithAttributeGraphEdgeTypeRequired,
+  createTournamentNodeWithAttributes,
+  TCreateTournamentNodeWithAttributeGraphNodeTypesRequired,
+  TCreateTournamentNodeWithAttributeGraphEdgeTypeRequired,
   TGenerateSingleEliminationScheduleGraphEdgeTypeRequired,
   TGenerateSingleEliminationScheduleGraphNodeTypesRequired,
+  ICreateTournamentNodeWithAttributesParameters,
 } from '@root/algorithms';
 import {GameType, TournamentType} from '@root/enum';
 import {TournamentNode} from '@root/implementations';
 import {IGraph} from '@root/types';
 
-export type NodeTypesRequired =
-  | CreateTournamentNodeWithAttributeGraphNodeTypesRequired
-  | TGenerateSingleEliminationScheduleGraphNodeTypesRequired;
+export type TSingleRoundTournamentCreateScheduleGraphNodeTypesRequired =
+  | TCreateTournamentNodeWithAttributeGraphNodeTypesRequired &
+      TGenerateSingleEliminationScheduleGraphNodeTypesRequired;
 
-export type EdgeTypeRequired =
-  | CreateTournamentNodeWithAttributeGraphEdgeTypeRequired
-  | TGenerateSingleEliminationScheduleGraphEdgeTypeRequired;
+export type TSingleRoundTournamentCreateScheduleGraphEdgeTypeRequired =
+  | TCreateTournamentNodeWithAttributeGraphEdgeTypeRequired &
+      TGenerateSingleEliminationScheduleGraphEdgeTypeRequired;
 
 export interface ISingleRoundTournamentCreateScheduleParameters {
   maxPlayers: number;
   minPlayers: number;
   name: string;
-  graph: IGraph<NodeTypesRequired, EdgeTypeRequired>;
+  graph: IGraph<
+    TSingleRoundTournamentCreateScheduleGraphNodeTypesRequired,
+    TSingleRoundTournamentCreateScheduleGraphEdgeTypeRequired
+  >;
 }
 
 const FINAL_TOURS = [GameType.QuarterFinal, GameType.SemiFinal, GameType.Final];
@@ -36,28 +40,31 @@ export function singleRoundTournamentCreateSchedule(
 
   validateSingleTournamentParameters(parameters);
 
-  const tournamentNode: TournamentNode =
-    createTournamentNodeWithAttributeParameters({
+  const createTournamentNodeParameters: ICreateTournamentNodeWithAttributesParameters =
+    {
       type: TournamentType.Single,
       graph,
       maxPlayers,
       minPlayers,
       name,
-    });
+    };
+  const tournamentNode: TournamentNode = createTournamentNodeWithAttributes(
+    createTournamentNodeParameters
+  );
 
-  const numberOfTours = Math.log2(maxPlayers);
-  const numberOfGroupTours = numberOfTours - FINAL_TOURS.length;
+  const overallNumberOfRounds = Math.log2(maxPlayers);
+  const overallNumberOfGroupRounds = overallNumberOfRounds - FINAL_TOURS.length;
+  const roundGameTypes: GameType[] = [
+    ...new Array(overallNumberOfGroupRounds).fill(GameType.Group),
+    ...FINAL_TOURS,
+  ].slice(-overallNumberOfRounds);
   const scheduleParams: IGenerateSingleEliminationSchedule = {
     graph,
     numberOfPlayers: maxPlayers,
+    indexOfFirstGame: 0,
     tournamentNode,
-    roundGameTypes: [
-      ...new Array(numberOfGroupTours).fill(GameType.Group),
-      ...FINAL_TOURS,
-    ],
+    roundGameTypes,
   };
-  const finalGameSlots = generateSingleEliminationSchedule(scheduleParams);
 
-  console.log(finalGameSlots);
-  // TODO
+  generateSingleEliminationSchedule(scheduleParams);
 }

@@ -10,29 +10,29 @@ import {
 } from '@root/implementations';
 import {getEdgeId, getNodeId} from '@root/algorithms';
 
-export type CreateTournamentNodeWithAttributeGraphNodeTypesRequired =
+export type TCreateTournamentNodeWithAttributeGraphNodeTypesRequired =
   | TournamentNameAttributeNode
   | TournamentTypeAttributeNode
   | TournamentMaxPlayersAttributeNode
   | TournamentMinPlayersAttributeNode
   | TournamentNode;
 
-export type CreateTournamentNodeWithAttributeGraphEdgeTypeRequired =
+export type TCreateTournamentNodeWithAttributeGraphEdgeTypeRequired =
   AttributeEdge<AttributeName>;
 
-export interface ICreateTournamentNodeWithAttributeParameters {
+export interface ICreateTournamentNodeWithAttributesParameters {
   type: TournamentType;
   name: string;
   maxPlayers: number;
   minPlayers: number;
   graph: IGraph<
-    CreateTournamentNodeWithAttributeGraphNodeTypesRequired,
-    CreateTournamentNodeWithAttributeGraphEdgeTypeRequired
+    TCreateTournamentNodeWithAttributeGraphNodeTypesRequired,
+    TCreateTournamentNodeWithAttributeGraphEdgeTypeRequired
   >;
 }
 
-export function createTournamentNodeWithAttributeParameters(
-  parameters: ICreateTournamentNodeWithAttributeParameters
+export function createTournamentNodeWithAttributes(
+  parameters: ICreateTournamentNodeWithAttributesParameters
 ): TournamentNode {
   const {graph, maxPlayers, minPlayers, name, type} = parameters;
 

@@ -63,51 +63,50 @@ export function generateSingleEliminationSchedule(
     roundGameTypes: toursGameTypes,
     indexOfFirstGame,
   } = parameters;
-  const numberOfTours = toursGameTypes.length;
+  const overallNumberOfRounds = toursGameTypes.length;
   const prevRoundNodes: GameSlotNode[] = [];
   let currentGameIndex: TGameSlotIndex = indexOfFirstGame;
 
   for (
-    let currentTourIdx = 0;
-    currentTourIdx < numberOfTours;
-    currentTourIdx += 1
+    let currentRoundIdx = 0;
+    currentRoundIdx < overallNumberOfRounds;
+    currentRoundIdx += 1
   ) {
-    const currentTourNumberOfMatches: number =
-      numberOfMatches / (currentTourIdx ? currentTourIdx * 2 : 1);
-    const isFinalGame = currentTourNumberOfMatches === 1;
-    const currentTourGameType: GameType = toursGameTypes[currentTourIdx];
+    const numberOfGamesInCurrentRound: number = Math.floor(
+      numberOfMatches / ((currentRoundIdx + 1) * 2)
+    );
+    const isFinalGame = numberOfGamesInCurrentRound === 1;
+    const currentRoundGameType: GameType = toursGameTypes[currentRoundIdx];
     const getCurrentRoundGameTypeEdge = () =>
-      new GameTypeEdgeImpl(getEdgeId(), currentTourGameType);
+      new GameTypeEdgeImpl(getEdgeId(), currentRoundGameType);
 
-    if (!isFinalGame && currentTourNumberOfMatches % 2) {
+    if (!isFinalGame && numberOfGamesInCurrentRound % 2) {
       throw new Error(
-        `The number of games should be an even figure, but it is "${currentTourNumberOfMatches}"`
+        `The number of games should be an even figure, but it is "${numberOfGamesInCurrentRound}"`
       );
     }
 
     for (
-      let gameIndex = 0;
-      gameIndex < currentTourNumberOfMatches;
-      gameIndex += 1
+      let gameIndexInCurrentRound = 0;
+      gameIndexInCurrentRound < numberOfGamesInCurrentRound;
+      gameIndexInCurrentRound += 1
     ) {
-      const currentGameSlots: GameSlotNode[] = [];
+      const currentGameGameSlots: GameSlotNode[] = [];
       const gameFirstSlot = new GameSlotNode(getNodeId(), currentGameIndex);
       graph.addNode(gameFirstSlot);
-      currentGameSlots.push(gameFirstSlot);
+      currentGameGameSlots.push(gameFirstSlot);
 
-      if (!isFinalGame) {
-        const gameSecondSlot = new GameSlotNode(getNodeId(), currentGameIndex);
-        graph.addNode(gameSecondSlot);
-        currentGameSlots.push(gameSecondSlot);
+      const gameSecondSlot = new GameSlotNode(getNodeId(), currentGameIndex);
+      graph.addNode(gameSecondSlot);
+      currentGameGameSlots.push(gameSecondSlot);
 
-        const gameSlotRivalEdge = new GameSlotRivalEdge(getEdgeId());
-        graph.addEdge(gameFirstSlot, gameSecondSlot, gameSlotRivalEdge);
-      }
+      const gameSlotRivalEdge = new GameSlotRivalEdge(getEdgeId());
+      graph.addEdge(gameFirstSlot, gameSecondSlot, gameSlotRivalEdge);
 
       currentGameIndex += 1;
 
-      for (const slot of currentGameSlots) {
-        if (currentTourIdx === 0) {
+      for (const slot of currentGameGameSlots) {
+        if (currentRoundIdx === 0) {
           // first tour slots should be connected with the tournament node
           graph.addEdge(tournamentNode, slot, getCurrentRoundGameTypeEdge());
         } else {
@@ -119,15 +118,15 @@ export function generateSingleEliminationSchedule(
           if (!prevRoundFirstSlot) {
             throw new Error(
               `There is no "prevRoundFirstSlot" for the round "${
-                currentTourIdx + 1
-              }" game "${gameIndex}"`
+                currentRoundIdx + 1
+              }" game "${gameIndexInCurrentRound}"`
             );
           }
           if (!prevRoundSecondSlot) {
             throw new Error(
               `There is no "prevRoundSecondSlot" for the round "${
-                currentTourIdx + 1
-              }" game "${gameIndex}"`
+                currentRoundIdx + 1
+              }" game "${gameIndexInCurrentRound}"`
             );
           }
 
@@ -144,7 +143,7 @@ export function generateSingleEliminationSchedule(
         }
       }
 
-      prevRoundNodes.push(...currentGameSlots);
+      prevRoundNodes.push(...currentGameGameSlots);
     }
   }
   return prevRoundNodes;

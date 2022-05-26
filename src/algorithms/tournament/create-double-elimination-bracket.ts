@@ -53,6 +53,20 @@ export interface ICreateDoubleEliminationBracketOfGamesParameters {
     TCreateDoubleEliminationBracketGraphNodeTypesRequired,
     TCreateDoubleEliminationBracketEdgeTypesRequired
   >;
+  /**
+   * Defines which game types the last rounds should have
+   *
+   * @type {GameType[]}
+   * @memberof ICreateDoubleEliminationBracketOfGamesParameters
+   */
+  finalRoundsGameTypes: GameType[];
+  /**
+   * A game type that will be used by default
+   *
+   * @type {GameType}
+   * @memberof ICreateDoubleEliminationBracketOfGamesParameters
+   */
+  defaultGameType: GameType;
 }
 
 interface IFakePlayer {
@@ -75,11 +89,30 @@ interface IFakePlayer {
 export function createDoubleEliminationBracket(
   parameters: ICreateDoubleEliminationBracketOfGamesParameters
 ): void {
-  const {graph, indexOfFirstGame, numberOfGamesInFirstRound} = parameters;
+  const {
+    graph,
+    indexOfFirstGame,
+    numberOfGamesInFirstRound,
+    finalRoundsGameTypes,
+    defaultGameType,
+  } = parameters;
 
-  if (numberOfGamesInFirstRound % 2) {
+  if (defaultGameType === null || defaultGameType === undefined) {
     throw new Error(
-      `The number of games should be an even figure, but it is ${numberOfGamesInFirstRound}`
+      'The default type of a game should be passed on parameters'
+    );
+  }
+  if (!finalRoundsGameTypes || !finalRoundsGameTypes.length) {
+    throw new Error(
+      'A game type for the final rounds should be a non-empty array'
+    );
+  }
+
+  const numberOfFakePlayers = numberOfGamesInFirstRound * 2;
+
+  if (numberOfFakePlayers % 2) {
+    throw new Error(
+      `The number of participants should be an even figure, but it is ${numberOfFakePlayers} of the number of games in the first round ${numberOfGamesInFirstRound}`
     );
   }
   const fakePlayers: IFakePlayer[] = new Array<IFakePlayer>(
@@ -120,16 +153,24 @@ export function createDoubleEliminationBracket(
     return fakePlayers.find(player => player.currentGameSlot === gameSlot);
   }
   function getGameTypeForRestPlayers(remainingPlayersCount: number): GameType {
+    let gameTypeOrUndefined: GameType | undefined;
     if (remainingPlayersCount === 2) {
-      return GameType.Final;
+      gameTypeOrUndefined =
+        finalRoundsGameTypes[finalRoundsGameTypes.length - 1];
     }
     if (remainingPlayersCount === 4) {
-      return GameType.SemiFinal;
+      gameTypeOrUndefined =
+        finalRoundsGameTypes[finalRoundsGameTypes.length - 2];
     }
     if (remainingPlayersCount === 8) {
-      return GameType.QuarterFinal;
+      gameTypeOrUndefined =
+        finalRoundsGameTypes[finalRoundsGameTypes.length - 3];
     }
-    return GameType.Group;
+    if (remainingPlayersCount === 8) {
+      gameTypeOrUndefined =
+        finalRoundsGameTypes[finalRoundsGameTypes.length - 3];
+    }
+    return gameTypeOrUndefined ?? defaultGameType;
   }
   function createGameTypeEdge(gameType: GameType): GameTypeEdgeImpl {
     return new GameTypeEdgeImpl(getEdgeId(), gameType);
@@ -151,7 +192,7 @@ export function createDoubleEliminationBracket(
 
       const currentGameSlotForPlayerOrUndefined: GameSlotNode | undefined =
         currentFakePlayer.currentGameSlot;
-      const slotExistsAndAvailableInCurrentRound: boolean =
+      const gameSlotForPlayerIsAlreadyExistsAndAvailableInCurrentRound: boolean =
         !!currentGameSlotForPlayerOrUndefined &&
         (availableRivalsGameSlotsWinnerTournament.includes(
           currentGameSlotForPlayerOrUndefined
@@ -160,14 +201,17 @@ export function createDoubleEliminationBracket(
             currentGameSlotForPlayerOrUndefined
           ));
 
-      if (slotExistsAndAvailableInCurrentRound) {
+      currentFakePlayerIdx += 1;
+
+      if (gameSlotForPlayerIsAlreadyExistsAndAvailableInCurrentRound) {
         continue;
       }
 
       let gameSlotNode: GameSlotNode;
-      const isWinnerTournamentParticipant = currentFakePlayer.losses === 0;
+      const isPlayerParticipantOfWinnerTournamentBranch =
+        currentFakePlayer.losses === 0;
 
-      if (isWinnerTournamentParticipant) {
+      if (isPlayerParticipantOfWinnerTournamentBranch) {
         // no losses - winners tournament
         gameSlotNode = createGameSlot(GameMode.Winner);
         availableRivalsGameSlotsWinnerTournament.push(gameSlotNode);
@@ -190,36 +234,49 @@ export function createDoubleEliminationBracket(
         );
       }
       currentFakePlayer.currentGameSlot = gameSlotNode;
-      currentFakePlayerIdx += 1;
+    }
+
+    if (fakePlayers.length === 1) {
+      // if the winner of the tournament has been determined
+      return;
     }
 
     // eslint-disable-next-line no-inner-declarations
     function getError(gameIdx: number, message: string): Error {
       return new Error(
-        `Tour: ${currentRoundIndex}, game: ${gameIdx}, error: ${message}`
+        `Round number: "${currentRoundIndex}". Game number: "${gameIdx}". Error: "${message}"`
       );
     }
     // eslint-disable-next-line no-inner-declarations
-    function generateGamesInTour(
+    function generateGamesInThisRound(
       availableRivalsGameSlotsInRound: Readonly<GameSlotNode[]>
     ): [GameSlotNode, GameSlotNode][] {
-      // winners tournament
-      const winnersTournamentRoundGamesActual =
-        availableRivalsGameSlotsInRound.length / 2;
-      const availableRivalsGameSlotsInRoundCopy = [
+      let currentGameIdx = 0;
+      const currentRoundParticipantGameNodes: [GameSlotNode, GameSlotNode][] =
+        [];
+      const availableRivalsGameSlotsInRoundCopy: Array<GameSlotNode | null> = [
         ...availableRivalsGameSlotsInRound,
       ];
-      let currentGameIdx = 0;
-      const tourParticipantGameNodes: [GameSlotNode, GameSlotNode][] = [];
+      /**
+       * if only two contestants remain it's a final game either in winners branch
+       * or looser branch.
+       */
+      const isFinalGameInTournamentBranch =
+        availableRivalsGameSlotsInRoundCopy.length === 2;
 
-      while (currentGameIdx < winnersTournamentRoundGamesActual) {
-        const gameFirstSlotIdx = 0;
-        const gameSecondSlotIdx = gameFirstSlotIdx + 2;
-        const gameFirstSlot: GameSlotNode | undefined =
-          availableRivalsGameSlotsInRound[gameFirstSlotIdx];
-        const gameSecondSlot: GameSlotNode | undefined =
-          availableRivalsGameSlotsInRound[gameSecondSlotIdx];
+      while (currentGameIdx < availableRivalsGameSlotsInRoundCopy.length) {
+        const gameFirstSlotIdx = currentGameIdx;
+        const gameSecondSlotIdx =
+          gameFirstSlotIdx + (isFinalGameInTournamentBranch ? 1 : 2);
+        const gameFirstSlot: GameSlotNode | null | undefined =
+          availableRivalsGameSlotsInRoundCopy[gameFirstSlotIdx];
+        const gameSecondSlot: GameSlotNode | null | undefined =
+          availableRivalsGameSlotsInRoundCopy[gameSecondSlotIdx];
 
+        currentGameIdx += 1;
+        if (gameFirstSlot === null) {
+          continue;
+        }
         if (!gameFirstSlot) {
           throw getError(currentGameIdx, 'First game slot was not found');
         }
@@ -234,19 +291,38 @@ export function createDoubleEliminationBracket(
 
         graph.addEdge(gameFirstSlot, gameSecondSlot, gameRivalEdge);
 
-        tourParticipantGameNodes.push([gameFirstSlot, gameSecondSlot]);
-        // delete both two slots from the game slots available for the current and next round
-        availableRivalsGameSlotsInRoundCopy.splice(gameFirstSlotIdx, 1);
-        availableRivalsGameSlotsInRoundCopy.splice(gameSecondSlotIdx - 1, 1);
-        currentGameIdx += 1;
+        currentRoundParticipantGameNodes.push([gameFirstSlot, gameSecondSlot]);
+        availableRivalsGameSlotsInRoundCopy[gameFirstSlotIdx] = null;
+        availableRivalsGameSlotsInRoundCopy[gameSecondSlotIdx] = null;
       }
-      return tourParticipantGameNodes;
+      return currentRoundParticipantGameNodes;
+    }
+
+    const isGrandFinalFirstRound =
+      availableRivalsGameSlotsWinnerTournament.length === 1 &&
+      availableRivalsGameSlotsLooserTournament.length === 1;
+    // if winner of the winner branch lost the first grand final game
+    const isGranFinalSecondRound =
+      availableRivalsGameSlotsWinnerTournament.length === 0 &&
+      availableRivalsGameSlotsLooserTournament.length === 2;
+    if (isGrandFinalFirstRound || isGranFinalSecondRound) {
+      const winnerOfWinnerBranch = isGrandFinalFirstRound
+        ? availableRivalsGameSlotsWinnerTournament[0]
+        : availableRivalsGameSlotsLooserTournament[1];
+      const winnerOfLooserBranch = availableRivalsGameSlotsLooserTournament[0];
+      const [grandFinalGame] = generateGamesInThisRound([
+        winnerOfWinnerBranch,
+        winnerOfLooserBranch,
+      ]);
+
+      simulateGame(grandFinalGame, 0); // TODO
+      continue;
     }
 
     const winnerTournamentTourParticipantGameNodes: [
       GameSlotNode,
       GameSlotNode
-    ][] = generateGamesInTour(availableRivalsGameSlotsWinnerTournament);
+    ][] = generateGamesInThisRound(availableRivalsGameSlotsWinnerTournament);
     // for the next tour available only those game slots which doesn't participate
     // in the current round
     availableRivalsGameSlotsWinnerTournament =
@@ -261,7 +337,7 @@ export function createDoubleEliminationBracket(
     const looserTournamentTourParticipantGameNodes: [
       GameSlotNode,
       GameSlotNode
-    ][] = generateGamesInTour(availableRivalsGameSlotsLooserTournament);
+    ][] = generateGamesInThisRound(availableRivalsGameSlotsLooserTournament);
     // for the next tour available only those game slots which doesn't participate
     // in the current round
     availableRivalsGameSlotsLooserTournament =
@@ -278,26 +354,25 @@ export function createDoubleEliminationBracket(
       rivalGameSlots: [GameSlotNode, GameSlotNode],
       gameIdx: number
     ): void {
-      const winnerSlotIdx: 0 | 1 = Math.random() > 0.5 ? 1 : 0;
-      const looserSlotIdx: 0 | 1 = winnerSlotIdx === 0 ? 1 : 0;
-      const gameWinnerSlotNode = rivalGameSlots[winnerSlotIdx];
-      const gameLooserSlotNode = rivalGameSlots[looserSlotIdx];
-
-      const playerWinner: IFakePlayer | undefined =
-        getPlayerOrUndefinedForGameSlot(gameWinnerSlotNode);
-
-      if (!playerWinner) {
-        throw getError(gameIdx, 'Player winner was not found');
+      const playerFirstSlot: IFakePlayer | undefined =
+        getPlayerOrUndefinedForGameSlot(rivalGameSlots[0]);
+      if (!playerFirstSlot) {
+        throw getError(gameIdx, 'Player for the first game slot was not found');
       }
-      playerWinner.wins += 1;
-
-      const playerLooser: IFakePlayer | undefined =
-        getPlayerOrUndefinedForGameSlot(gameLooserSlotNode);
-
-      if (!playerLooser) {
-        throw getError(gameIdx, 'Player looser was not found');
+      const playerSecondSlot: IFakePlayer | undefined =
+        getPlayerOrUndefinedForGameSlot(rivalGameSlots[1]);
+      if (!playerSecondSlot) {
+        throw getError(
+          gameIdx,
+          'Player for the second game slot was not found'
+        );
       }
-      playerLooser.losses += 1;
+
+      if (playerFirstSlot.losses > playerSecondSlot.losses) {
+        playerSecondSlot.losses += 1;
+      } else {
+        playerFirstSlot.losses += 1;
+      }
     }
 
     winnerTournamentTourParticipantGameNodes.forEach(simulateGame);

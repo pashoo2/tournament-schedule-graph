@@ -1,19 +1,18 @@
-import {exportToGrafifyFormat} from '@root/export';
 import {GraphImpl} from '@root/implementations';
 import {
-  ISingleRoundTournamentCreateScheduleParameters,
-  singleRoundTournamentCreateSchedule,
-  TSingleRoundTournamentCreateScheduleGraphEdgeTypeRequired,
-  TSingleRoundTournamentCreateScheduleGraphNodeTypesRequired,
+  ISingleEliminationTournamentCreateScheduleParameters,
+  singleEliminationTournamentCreateSchedule,
+  TSingleEliminationTournamentCreateScheduleGraphEdgeTypeRequired,
+  TSingleEliminationTournamentCreateScheduleGraphNodeTypesRequired,
 } from '@root/tournaments/single-elimination/algorithms/create-schedule';
 import {IGraph} from '@root/types';
 
-describe('singleRoundTournamentCreateSchedule', () => {
+describe('singleEliminationTournamentCreateSchedule', () => {
   let graph: IGraph<
-    TSingleRoundTournamentCreateScheduleGraphNodeTypesRequired,
-    TSingleRoundTournamentCreateScheduleGraphEdgeTypeRequired
+    TSingleEliminationTournamentCreateScheduleGraphNodeTypesRequired,
+    TSingleEliminationTournamentCreateScheduleGraphEdgeTypeRequired
   >;
-  let scheduleParameters: ISingleRoundTournamentCreateScheduleParameters;
+  let scheduleParameters: ISingleEliminationTournamentCreateScheduleParameters;
 
   beforeEach(() => {
     graph = new GraphImpl();
@@ -26,8 +25,8 @@ describe('singleRoundTournamentCreateSchedule', () => {
   });
 
   it('Should fill out graph with nodes required to make a new single elimination tournament schedule', () => {
-    singleRoundTournamentCreateSchedule(scheduleParameters);
-    const exportedGraph = exportToGrafifyFormat(graph);
-    console.log(exportedGraph);
+    singleEliminationTournamentCreateSchedule(scheduleParameters);
+    expect(graph.edges).toMatchSnapshot();
+    expect(graph.nodes).toMatchSnapshot();
   });
 });

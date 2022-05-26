@@ -1,11 +1,11 @@
-export interface ISingleRoundTournamentCreateScheduleMainParameters {
+export interface IDoubleEliminationTournamentCreateScheduleMainParameters {
   maxPlayers: number;
   minPlayers: number;
   name: string;
 }
 
-export function validateSingleTournamentParameters(
-  tournamentParameters: ISingleRoundTournamentCreateScheduleMainParameters
+export function validateDoubleEliminationTournamentParameters(
+  tournamentParameters: IDoubleEliminationTournamentCreateScheduleMainParameters
 ): void {
   const {maxPlayers, minPlayers, name} = tournamentParameters;
 

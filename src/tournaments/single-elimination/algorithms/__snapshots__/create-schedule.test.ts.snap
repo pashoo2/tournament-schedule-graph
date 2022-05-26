@@ -1,0 +1,191 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`singleRoundTournamentCreateSchedule Should fill out graph with nodes required to make a new single elimination tournament schedule 1`] = `
+Object {
+  "edges": Array [
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "b66807b2-609a-4297-b148-f92bdace7463",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "9d84c9c9-32e3-414d-b427-92a25194afbb",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "d67a3266-a33e-4d9d-affb-ef59228de311",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "bac8f7f4-382b-4b78-bd51-db90bf76dc6d",
+    },
+    Object {
+      "source": "52eb69ed-1927-4673-a548-0822ca96f9e9",
+      "target": "fe23d793-bc95-4d96-ab8c-eb9db664b218",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "52eb69ed-1927-4673-a548-0822ca96f9e9",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "fe23d793-bc95-4d96-ab8c-eb9db664b218",
+    },
+    Object {
+      "source": "bbd170aa-bc97-47eb-8221-91cdc237774f",
+      "target": "bcd709f4-4ea3-44b5-93b2-821392849730",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "bbd170aa-bc97-47eb-8221-91cdc237774f",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "bcd709f4-4ea3-44b5-93b2-821392849730",
+    },
+    Object {
+      "source": "0d8393ac-2a59-4057-bf01-f29f1b793732",
+      "target": "65b8a200-8fcf-4c35-ba15-7d5d8ad442a3",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "0d8393ac-2a59-4057-bf01-f29f1b793732",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "65b8a200-8fcf-4c35-ba15-7d5d8ad442a3",
+    },
+    Object {
+      "source": "0c628736-86fb-4211-924e-1b26081c6318",
+      "target": "fa5d1cba-f1af-422b-9c19-042174ed530f",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "0c628736-86fb-4211-924e-1b26081c6318",
+    },
+    Object {
+      "source": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+      "target": "fa5d1cba-f1af-422b-9c19-042174ed530f",
+    },
+    Object {
+      "source": "a873212a-bc71-481f-b9ab-987bfffa3b15",
+      "target": "f322fe8a-400c-452b-ad34-e85b3feea15c",
+    },
+    Object {
+      "source": "52eb69ed-1927-4673-a548-0822ca96f9e9",
+      "target": "a873212a-bc71-481f-b9ab-987bfffa3b15",
+    },
+    Object {
+      "source": "fe23d793-bc95-4d96-ab8c-eb9db664b218",
+      "target": "a873212a-bc71-481f-b9ab-987bfffa3b15",
+    },
+    Object {
+      "source": "bbd170aa-bc97-47eb-8221-91cdc237774f",
+      "target": "f322fe8a-400c-452b-ad34-e85b3feea15c",
+    },
+    Object {
+      "source": "bcd709f4-4ea3-44b5-93b2-821392849730",
+      "target": "f322fe8a-400c-452b-ad34-e85b3feea15c",
+    },
+    Object {
+      "source": "3d7a207f-2f3b-49ff-b67e-e4e0ad7e8455",
+      "target": "d799414d-5bfb-413a-a6f4-d80c9e5d4d5f",
+    },
+    Object {
+      "source": "0d8393ac-2a59-4057-bf01-f29f1b793732",
+      "target": "3d7a207f-2f3b-49ff-b67e-e4e0ad7e8455",
+    },
+    Object {
+      "source": "65b8a200-8fcf-4c35-ba15-7d5d8ad442a3",
+      "target": "3d7a207f-2f3b-49ff-b67e-e4e0ad7e8455",
+    },
+    Object {
+      "source": "0c628736-86fb-4211-924e-1b26081c6318",
+      "target": "d799414d-5bfb-413a-a6f4-d80c9e5d4d5f",
+    },
+    Object {
+      "source": "fa5d1cba-f1af-422b-9c19-042174ed530f",
+      "target": "d799414d-5bfb-413a-a6f4-d80c9e5d4d5f",
+    },
+    Object {
+      "source": "a72436e6-ce58-4fbd-8b02-181bb3742217",
+      "target": "21b1b3f4-2eef-4337-8d79-17047ca890a7",
+    },
+    Object {
+      "source": "a873212a-bc71-481f-b9ab-987bfffa3b15",
+      "target": "a72436e6-ce58-4fbd-8b02-181bb3742217",
+    },
+    Object {
+      "source": "f322fe8a-400c-452b-ad34-e85b3feea15c",
+      "target": "a72436e6-ce58-4fbd-8b02-181bb3742217",
+    },
+    Object {
+      "source": "3d7a207f-2f3b-49ff-b67e-e4e0ad7e8455",
+      "target": "21b1b3f4-2eef-4337-8d79-17047ca890a7",
+    },
+    Object {
+      "source": "d799414d-5bfb-413a-a6f4-d80c9e5d4d5f",
+      "target": "21b1b3f4-2eef-4337-8d79-17047ca890a7",
+    },
+  ],
+  "nodes": Array [
+    Object {
+      "id": "05f558e2-41f0-4c77-b571-d6c5b166929a",
+    },
+    Object {
+      "id": "b66807b2-609a-4297-b148-f92bdace7463",
+    },
+    Object {
+      "id": "9d84c9c9-32e3-414d-b427-92a25194afbb",
+    },
+    Object {
+      "id": "d67a3266-a33e-4d9d-affb-ef59228de311",
+    },
+    Object {
+      "id": "bac8f7f4-382b-4b78-bd51-db90bf76dc6d",
+    },
+    Object {
+      "id": "52eb69ed-1927-4673-a548-0822ca96f9e9",
+    },
+    Object {
+      "id": "fe23d793-bc95-4d96-ab8c-eb9db664b218",
+    },
+    Object {
+      "id": "bbd170aa-bc97-47eb-8221-91cdc237774f",
+    },
+    Object {
+      "id": "bcd709f4-4ea3-44b5-93b2-821392849730",
+    },
+    Object {
+      "id": "0d8393ac-2a59-4057-bf01-f29f1b793732",
+    },
+    Object {
+      "id": "65b8a200-8fcf-4c35-ba15-7d5d8ad442a3",
+    },
+    Object {
+      "id": "0c628736-86fb-4211-924e-1b26081c6318",
+    },
+    Object {
+      "id": "fa5d1cba-f1af-422b-9c19-042174ed530f",
+    },
+    Object {
+      "id": "a873212a-bc71-481f-b9ab-987bfffa3b15",
+    },
+    Object {
+      "id": "f322fe8a-400c-452b-ad34-e85b3feea15c",
+    },
+    Object {
+      "id": "3d7a207f-2f3b-49ff-b67e-e4e0ad7e8455",
+    },
+    Object {
+      "id": "d799414d-5bfb-413a-a6f4-d80c9e5d4d5f",
+    },
+    Object {
+      "id": "a72436e6-ce58-4fbd-8b02-181bb3742217",
+    },
+    Object {
+      "id": "21b1b3f4-2eef-4337-8d79-17047ca890a7",
+    },
+  ],
+}
+`;

@@ -1,5 +1,4 @@
 import {
-  validateSingleTournamentParameters,
   generateSingleEliminationSchedule,
   IGenerateSingleEliminationSchedule,
   createTournamentNodeWithAttributes,
@@ -8,37 +7,42 @@ import {
   TGenerateSingleEliminationScheduleGraphEdgeTypeRequired,
   TGenerateSingleEliminationScheduleGraphNodeTypesRequired,
   ICreateTournamentNodeWithAttributesParameters,
+  validateDoubleEliminationTournamentParameters,
 } from '@root/algorithms';
 import {GameType, TournamentType} from '@root/enum';
 import {TournamentNode} from '@root/implementations';
 import {IGraph} from '@root/types';
 
-export type TSingleRoundTournamentCreateScheduleGraphNodeTypesRequired =
+export type TSingleEliminationTournamentCreateScheduleGraphNodeTypesRequired =
   | TCreateTournamentNodeWithAttributeGraphNodeTypesRequired &
       TGenerateSingleEliminationScheduleGraphNodeTypesRequired;
 
-export type TSingleRoundTournamentCreateScheduleGraphEdgeTypeRequired =
+export type TSingleEliminationTournamentCreateScheduleGraphEdgeTypeRequired =
   | TCreateTournamentNodeWithAttributeGraphEdgeTypeRequired &
       TGenerateSingleEliminationScheduleGraphEdgeTypeRequired;
 
-export interface ISingleRoundTournamentCreateScheduleParameters {
+export interface ISingleEliminationTournamentCreateScheduleParameters {
   maxPlayers: number;
   minPlayers: number;
   name: string;
   graph: IGraph<
-    TSingleRoundTournamentCreateScheduleGraphNodeTypesRequired,
-    TSingleRoundTournamentCreateScheduleGraphEdgeTypeRequired
+    TSingleEliminationTournamentCreateScheduleGraphNodeTypesRequired,
+    TSingleEliminationTournamentCreateScheduleGraphEdgeTypeRequired
   >;
 }
 
-const FINAL_TOURS = [GameType.QuarterFinal, GameType.SemiFinal, GameType.Final];
+const FINAL_TOURS = Object.freeze([
+  GameType.QuarterFinal,
+  GameType.SemiFinal,
+  GameType.Final,
+]);
 
-export function singleRoundTournamentCreateSchedule(
-  parameters: ISingleRoundTournamentCreateScheduleParameters
+export function singleEliminationTournamentCreateSchedule(
+  parameters: ISingleEliminationTournamentCreateScheduleParameters
 ): void {
-  const {name, minPlayers, maxPlayers, graph} = parameters;
+  validateDoubleEliminationTournamentParameters(parameters);
 
-  validateSingleTournamentParameters(parameters);
+  const {name, minPlayers, maxPlayers, graph} = parameters;
 
   const createTournamentNodeParameters: ICreateTournamentNodeWithAttributesParameters =
     {

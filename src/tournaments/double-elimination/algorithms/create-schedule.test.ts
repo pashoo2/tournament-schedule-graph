@@ -29,6 +29,7 @@ describe('doubleEliminationTournamentCreateSchedule', () => {
 
   it('Should create a proper schedule for an even number of games in the first round', () => {
     doubleEliminationTournamentCreateSchedule(scheduleParameters);
+    // const exported = exportToGrafifyFormat(graph)
     // TODO - it can't match a previous snapshot
     // expect(graph.edges).toMatchSnapshot();
     // expect(graph.nodes).toMatchSnapshot();
@@ -40,6 +41,7 @@ describe('doubleEliminationTournamentCreateSchedule', () => {
       maxPlayers: 6,
       minPlayers: 2,
     });
+    // const exported = exportToGrafifyFormat(graph)
     // TODO - it can't match a previous snapshot
     // expect(graph.edges).toMatchSnapshot();
     // expect(graph.nodes).toMatchSnapshot();

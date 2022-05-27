@@ -10,7 +10,7 @@ import {
   createDoubleEliminationBracket,
 } from '@root/algorithms';
 import {GameType, TournamentType} from '@root/enum';
-// import {TournamentNode} from '@root/implementations';
+import {TournamentNode} from '@root/implementations';
 import {IGraph} from '@root/types';
 
 export type TDoubleEliminationTournamentCreateScheduleGraphNodeTypesRequired =
@@ -54,14 +54,14 @@ export function doubleEliminationTournamentCreateSchedule(
       minPlayers,
       name,
     };
-  // const tournamentNode: TournamentNode =
-  createTournamentNodeWithAttributes(createTournamentNodeParameters);
+  const tournamentNode: TournamentNode = createTournamentNodeWithAttributes(createTournamentNodeParameters);
 
   const overallNumberOfRounds = Math.log2(maxPlayers);
   const finalRoundGameTypes: GameType[] = [...FINAL_ROUNDS].slice(
     -overallNumberOfRounds
   );
   const scheduleParams: ICreateDoubleEliminationBracketOfGamesParameters = {
+    tournamentNode,
     graph,
     numberOfGamesInFirstRound: maxPlayers / 2,
     indexOfFirstGame: 0,

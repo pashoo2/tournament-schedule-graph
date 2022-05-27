@@ -5,7 +5,7 @@ import {
   GameSlotRivalEdge,
   GameTypeEdgeImpl,
 } from '@root/implementations';
-import {IGraph, TGameSlotIndex} from '@root/types';
+import {IGraph, ITournamentNode, TGameSlotIndex} from '@root/types';
 import {getEdgeId} from '@root/algorithms';
 import {
   TCreateOneRoundGameSlotsGraphNodeTypesRequired,
@@ -13,10 +13,12 @@ import {
 } from './create-one-round-game-slots';
 import {GameMode, GameType} from '@root/enum';
 import {getNodeId} from '../get-node-id';
+import {TournamentNode} from '@root/implementations';
 
 export type TCreateDoubleEliminationBracketGraphNodeTypesRequired =
   | TCreateOneRoundGameSlotsGraphNodeTypesRequired
-  | GameModeAttributeNode;
+  | GameModeAttributeNode
+  | TournamentNode;
 
 export type TCreateDoubleEliminationBracketEdgeTypesRequired =
   | TCreateOneRoundGameSlotsGraphEdgeTypesRequired
@@ -24,6 +26,14 @@ export type TCreateDoubleEliminationBracketEdgeTypesRequired =
   | GameModeEdge;
 
 export interface ICreateDoubleEliminationBracketOfGamesParameters {
+  /**
+   * A node that represents the tournament.
+   * First round game nodes
+   *
+   * @type {TournamentNode}
+   * @memberof ICreateDoubleEliminationBracketOfGamesParameters
+   */
+  tournamentNode: TournamentNode;
   /**
    * The very first game slots will have this index.
    * Next games will have this increased each time by 1.
@@ -90,6 +100,7 @@ export function createDoubleEliminationBracket(
   parameters: ICreateDoubleEliminationBracketOfGamesParameters
 ): void {
   const {
+    tournamentNode,
     graph,
     indexOfFirstGame,
     numberOfGamesInFirstRound,
@@ -175,6 +186,12 @@ export function createDoubleEliminationBracket(
   function createGameTypeEdge(gameType: GameType): GameTypeEdgeImpl {
     return new GameTypeEdgeImpl(getEdgeId(), gameType);
   }
+  function linkGameSlotNodeToTournamentNode(
+    gameSlotNode: GameSlotNode,
+    gameType: GameType
+  ): void {
+    graph.addEdge(tournamentNode, gameSlotNode, createGameTypeEdge(gameType));
+  }
 
   let currentRoundIndex = 0;
 
@@ -210,6 +227,9 @@ export function createDoubleEliminationBracket(
       let gameSlotNode: GameSlotNode;
       const isPlayerParticipantOfWinnerTournamentBranch =
         currentFakePlayer.losses === 0;
+      const hasPlayerParticipatedInAnyGame = Boolean(
+        currentGameSlotForPlayerOrUndefined
+      );
 
       if (isPlayerParticipantOfWinnerTournamentBranch) {
         // no losses - winners tournament
@@ -231,6 +251,12 @@ export function createDoubleEliminationBracket(
           currentGameSlotForPlayerOrUndefined,
           gameSlotNode,
           gameTypeEdge
+        );
+      }
+      if (!hasPlayerParticipatedInAnyGame) {
+        linkGameSlotNodeToTournamentNode(
+          gameSlotNode,
+          getGameTypeForRestPlayers(fakePlayers.length)
         );
       }
       currentFakePlayer.currentGameSlot = gameSlotNode;
